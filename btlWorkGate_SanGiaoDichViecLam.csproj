@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="Content\danhsachtin.css" />
     <Content Include="Content\js\dangtin.js" />
     <Content Include="Content\Site.css" />
@@ -112,9 +113,9 @@
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\TinTuyenDung\DangTin.cshtml" />
+    <Content Include="Views\TinTuyenDung\vDangTin.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\TinTuyenDung\DanhSachTin.cshtml" />
+    <Content Include="Views\TinTuyenDung\vDanhSachTin.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

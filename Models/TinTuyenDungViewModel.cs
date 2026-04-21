@@ -13,6 +13,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
         [Display(Name = "Mô tả công việc")]
         public string tMoTaCV { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Yêu cầu ứng viên không được để trống")]
         [Display(Name = "Yêu cầu chuyên môn")]
         public string? sYeuCauChuyenMon { get; set; }
 

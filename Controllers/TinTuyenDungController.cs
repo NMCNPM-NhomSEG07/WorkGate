@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using btlWorkGate_SanGiaoDichViecLam.Models;
 
@@ -9,25 +10,29 @@ namespace btlWorkGate_SanGiaoDichViecLam.Controllers
         private readonly mTinTuyenDung _model = new mTinTuyenDung();
 
         // ==================== DANH SÁCH TIN TUYỂN DỤNG CỦA TÔI ====================
-        // Thay vì Index(), đổi thành DanhSachTin()
-        public ActionResult DanhSachTin()
+        public ActionResult vDanhSachTin()
         {
-            string maDN = "DN0001";
-
+            //string maDN = Session["MaDN"]?.ToString();
+            //if (string.IsNullOrEmpty(maDN))
+            //{
+            //    return Json(new { success = false, code = "MS_05", message = "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." });
+            //}
+            string maDN = Session["MaDN"] as string;
             if (string.IsNullOrEmpty(maDN))
             {
-                return RedirectToAction("Login", "Account");
+                // Tạm thời dùng cứng để test, sau này lấy từ session
+                maDN = "DN001";
+                // return RedirectToAction("Login", "Account");
             }
 
             var listTin = _model.GetTinTuyenDungByMaDN(maDN);
-            return View(listTin);           // Sẽ tìm file DanhSachTin.cshtml
+            return View(listTin);
         }
 
         // ==================== MỞ FORM ĐĂNG TIN MỚI ====================
-        public ActionResult DangTin()
+        public ActionResult vDangTin()
         {
-            // Trả về View rỗng để đăng tin mới
-            return View(new TinTuyenDungViewModel());   // Truyền model rỗng
+            return View(new TinTuyenDungViewModel());
         }
 
         // ==================== XỬ LÝ ĐĂNG TIN (POST) ====================
@@ -35,21 +40,40 @@ namespace btlWorkGate_SanGiaoDichViecLam.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult yeuCauDangTin(TinTuyenDungViewModel vm)
         {
-            string maDN = "DN0001";   // Sau này lấy từ Session
+            // Kiểm tra ModelState từ DataAnnotation (các [Required], [Range])
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage);
+                string message = string.Join("; ", errors);
+                return Json(new { success = false, code = "MS_01", message });
+            }
 
+            // Lấy mã doanh nghiệp từ session (sau này thay bằng session thật)
+            string maDN = Session["MaDN"] as string;
             if (string.IsNullOrEmpty(maDN))
             {
-                return Json(new { success = false, message = "MS_05", error = "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." });
+                // Tạm gán cứng để test
+                maDN = "DN001";
+                // return Json(new { success = false, code = "MS_05", message = "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại." });
             }
 
-            // Xác thực nghiệp vụ
+            // Xác thực nghiệp vụ (business validation)
             string? errorCode = xacThucNghiepVu(vm);
-            if (!string.IsNullOrEmpty(errorCode))
+            if (errorCode != null)
             {
-                return Json(new { success = false, message = errorCode });
+                string msg = errorCode switch
+                {
+                    "MS_01" => "Vui lòng điền đầy đủ các trường bắt buộc (vị trí, mô tả, địa điểm, yêu cầu).",
+                    "MS_02" => "Số lượng tuyển phải lớn hơn 0.",
+                    "MS_03" => "Hạn nộp hồ sơ phải sau ngày hiện tại.",
+                    _ => "Dữ liệu không hợp lệ."
+                };
+                return Json(new { success = false, code = errorCode, message = msg });
             }
 
-            // Chuẩn bị dữ liệu
+            // Tạo đối tượng TinTuyenDung (chưa có mã tin, ngày đăng, trạng thái)
             TinTuyenDung tin = new TinTuyenDung
             {
                 FK_sMaDN = maDN,
@@ -59,33 +83,53 @@ namespace btlWorkGate_SanGiaoDichViecLam.Controllers
                 iSoLuong = vm.iSoLuong,
                 fMucLuong = vm.fMucLuong,
                 sDiaDiem = vm.sDiaDiem,
-                dHanNop = vm.dHanNop,
-                dNgayDang = DateTime.Now,
-                sTrangThaiTin = "Chờ duyệt"
+                dHanNop = vm.dHanNop
+                
             };
 
-            int result = _model.truyVanThemTinTuyenDung(tin);
+            // Gọi model lưu tin mới
+            int result = _model.luuTinMoi(tin);
 
             if (result > 0)
             {
-                return Json(new { success = true, message = "MS_Success", maTin = tin.PK_sMaTin });
+                return Json(new
+                {
+                    success = true,
+                    code = "MS_Success",
+                    message = "Đăng tin tuyển dụng thành công!",
+                    maTin = tin.PK_sMaTin
+                });
             }
             else
             {
-                return Json(new { success = false, message = "MS_05", error = "Không thể lưu tin tuyển dụng vào cơ sở dữ liệu." });
+                return Json(new
+                {
+                    success = false,
+                    code = "MS_05",
+                    message = "Lỗi hệ thống, không thể lưu tin. Vui lòng thử lại sau."
+                });
             }
         }
 
         // ==================== XÁC THỰC NGHIỆP VỤ ====================
-        private string xacThucNghiepVu(TinTuyenDungViewModel vm)
+        private string? xacThucNghiepVu(TinTuyenDungViewModel vm)
         {
-            if (vm.dHanNop <= DateTime.Now)
-                return "MS_03";   // Hạn nộp không được trong quá khứ
+            // MS_01: Kiểm tra các trường bắt buộc 
+            if (string.IsNullOrWhiteSpace(vm.sViTriCV) ||
+                string.IsNullOrWhiteSpace(vm.tMoTaCV) ||
+                string.IsNullOrWhiteSpace(vm.sDiaDiem) ||
+                string.IsNullOrWhiteSpace(vm.sYeuCauChuyenMon))
+            {
+                return "MS_01";
+            }
 
+            // MS_02: Số lượng tuyển phải > 0
             if (vm.iSoLuong <= 0)
-                return "MS_02";   // Số lượng phải > 0
+                return "MS_02";
 
-            // Có thể thêm kiểm tra khác: vị trí không rỗng, mức lương > 0...
+            // MS_03: Hạn nộp phải lớn hơn ngày hiện tại (không được bằng)
+            if (vm.dHanNop.Date <= DateTime.Today)
+                return "MS_03";
 
             return null;
         }

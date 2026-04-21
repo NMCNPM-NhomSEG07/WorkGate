@@ -1,0 +1,189 @@
+﻿@model btlWorkGate_SanGiaoDichViecLam.Models.TinTuyenDungViewModel
+
+@{
+    ViewBag.Title = "Đăng tin tuyển dụng mới";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body, html, *, input, textarea, button, label, h2 {
+        font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, "Roboto", "Inter", sans-serif !important;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        background: #f3f4f6;
+    }
+
+    .post-job-form {
+        max-width: 900px;           /* Bạn có thể tăng lên nếu muốn rộng hơn */
+        margin: 20px auto;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #1e40af;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+        width: 100%;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #374151;
+        font-size: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        background: white;
+        transition: 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        outline: none;
+    }
+
+    /* Hàng 2 cột: sử dụng flex với gap giống hệt btn-group */
+    .form-row {
+        display: flex;
+        gap: 16px;
+        width: 100%;
+        
+    }
+
+    .form-row .form-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .error {
+        color: #ef4444;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    /* Nhóm nút - giữ nguyên gap 16px */
+    .btn-group {
+        display: flex;
+        gap: 16px;
+        margin-top: 40px;
+    }
+
+    .btn-submit, .btn-cancel {
+        flex: 1;
+        padding: 12px 16px;   /* Đồng bộ padding với input */
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .btn-submit {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .btn-submit:disabled {
+        background: #93c5fd;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="post-job-form">
+    <h2 class="form-title">Đăng tin tuyển dụng</h2>
+    @using (Html.BeginForm("yeuCauDangTin", "TinTuyenDung", FormMethod.Post, new { id = "formDangTin" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- Vị trí tuyển dụng - full width, chiếm 100% (giống 2 nút cạnh nhau) -->
+        <div class="form-group">
+            <label>Vị trí tuyển dụng</label>
+            @Html.TextBoxFor(m => m.sViTriCV, new { @class = "form-control", id = "viTri", placeholder = "VD: Lập trình viên Front-End" })
+            <div id="errViTri" class="error"></div>
+        </div>
+
+        <!-- Hàng 2 cột: Địa điểm + Mức lương (mỗi cột rộng bằng 1 nút) -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Địa điểm</label>
+                @Html.TextBoxFor(m => m.sDiaDiem, new { @class = "form-control", id = "diaDiem", placeholder = "Hà Nội" })
+                <div id="errDiaDiem" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label>Mức lương</label>
+                @Html.TextBoxFor(m => m.fMucLuong, new { @class = "form-control", id = "luong", type = "text", placeholder = "10.000.000" })
+                <div id="errLuong" class="error"></div>
+            </div>
+        </div>
+
+        <!-- Hàng 2 cột: Số lượng + Hạn nộp -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Số lượng</label>
+                @Html.TextBoxFor(m => m.iSoLuong, new { @class = "form-control", id = "soLuong", type = "number", min = "1" })
+                <div id="errSoLuong" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label>Hạn nộp hồ sơ</label>
+                @Html.TextBoxFor(m => m.dHanNop, new { @class = "form-control", id = "hanNop", type = "date" })
+                <div id="errHanNop" class="error"></div>
+            </div>
+        </div>
+
+        <!-- Hàng 2 cột: Mô tả công việc + Yêu cầu ứng viên -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mô tả công việc</label>
+                @Html.TextAreaFor(m => m.tMoTaCV, new { @class = "form-control", id = "moTa", rows = "5", placeholder = "Mô tả chi tiết về công việc..." })
+                <div id="errMoTa" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label>Yêu cầu ứng viên</label>
+                @Html.TextAreaFor(m => m.sYeuCauChuyenMon, new { @class = "form-control", id = "yeuCau", rows = "5", placeholder = "Các yêu cầu về kinh nghiệm, kỹ năng..." })
+                <div id="errYeuCau" class="error"></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" onclick="history.back()" class="btn-cancel">Hủy</button>
+            <button type="button" id="btnDangTin" class="btn-submit" disabled>Đăng tin</button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/Content/js/dangtin.js"></script>
+}
