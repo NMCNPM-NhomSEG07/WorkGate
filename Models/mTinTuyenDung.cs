@@ -45,7 +45,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
 
                 string sqlInsert = @"
                     INSERT INTO tblTinTuyenDung 
-                    (PK_sMaTin, FK_sMaDN, sViTriCV, tMoTaCV, sYeuCauChuyenMon, iSoLuong, 
+                    (PK_sMaTin, FK_sMaDN, sViTriCV, sMoTaCV, sYeuCauChuyenMon, iSoLuong, 
                      fMucLuong, sDiaDiem, dHanNop, dNgayDang, sTrangThaiTin)
                     VALUES 
                     (@MaTin, @MaDN, @ViTri, @MoTa, @YeuCau, @SoLuong, 
@@ -56,7 +56,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
                 cmd.Parameters.AddWithValue("@MaTin", tin.PK_sMaTin);
                 cmd.Parameters.AddWithValue("@MaDN", tin.FK_sMaDN);
                 cmd.Parameters.AddWithValue("@ViTri", tin.sViTriCV);
-                cmd.Parameters.AddWithValue("@MoTa", tin.tMoTaCV);
+                cmd.Parameters.AddWithValue("@MoTa", tin.sMoTaCV);
                 cmd.Parameters.AddWithValue("@YeuCau", (object)tin.sYeuCauChuyenMon ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@SoLuong", tin.iSoLuong);
                 cmd.Parameters.AddWithValue("@MucLuong", (object)tin.fMucLuong ?? DBNull.Value);
@@ -99,7 +99,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
                                 PK_sMaTin = reader["PK_sMaTin"].ToString(),
                                 FK_sMaDN = reader["FK_sMaDN"].ToString(),
                                 sViTriCV = reader["sViTriCV"].ToString(),
-                                tMoTaCV = reader["tMoTaCV"].ToString(),
+                                sMoTaCV = reader["sMoTaCV"].ToString(),
                                 sYeuCauChuyenMon = reader["sYeuCauChuyenMon"]?.ToString(),
                                 iSoLuong = Convert.ToInt32(reader["iSoLuong"]),
                                 fMucLuong = reader["fMucLuong"] as double?,

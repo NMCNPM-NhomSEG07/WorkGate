@@ -11,7 +11,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
 
         [Required(ErrorMessage = "Mô tả công việc không được để trống")]
         [Display(Name = "Mô tả công việc")]
-        public string tMoTaCV { get; set; } = string.Empty;
+        public string sMoTaCV { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Yêu cầu ứng viên không được để trống")]
         [Display(Name = "Yêu cầu chuyên môn")]

@@ -203,10 +203,6 @@
             return;
         }
 
-        if (!confirm("Bạn có chắc chắn muốn đăng tin tuyển dụng này?")) {
-            return;
-        }
-
         $(this).prop("disabled", true).text("Đang đăng...");
 
         $.ajax({

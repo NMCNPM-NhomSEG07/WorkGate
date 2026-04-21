@@ -78,7 +78,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Controllers
             {
                 FK_sMaDN = maDN,
                 sViTriCV = vm.sViTriCV,
-                tMoTaCV = vm.tMoTaCV,
+                sMoTaCV = vm.sMoTaCV,
                 sYeuCauChuyenMon = vm.sYeuCauChuyenMon,
                 iSoLuong = vm.iSoLuong,
                 fMucLuong = vm.fMucLuong,
@@ -116,7 +116,7 @@ namespace btlWorkGate_SanGiaoDichViecLam.Controllers
         {
             // MS_01: Kiểm tra các trường bắt buộc 
             if (string.IsNullOrWhiteSpace(vm.sViTriCV) ||
-                string.IsNullOrWhiteSpace(vm.tMoTaCV) ||
+                string.IsNullOrWhiteSpace(vm.sMoTaCV) ||
                 string.IsNullOrWhiteSpace(vm.sDiaDiem) ||
                 string.IsNullOrWhiteSpace(vm.sYeuCauChuyenMon))
             {

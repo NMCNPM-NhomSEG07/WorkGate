@@ -17,7 +17,7 @@
     }
 
     .post-job-form {
-        max-width: 900px;           /* Bạn có thể tăng lên nếu muốn rộng hơn */
+        max-width: 900px;           
         margin: 20px auto;
         background: white;
         padding: 20px 30px;
@@ -63,7 +63,6 @@
         outline: none;
     }
 
-    /* Hàng 2 cột: sử dụng flex với gap giống hệt btn-group */
     .form-row {
         display: flex;
         gap: 16px;
@@ -87,7 +86,6 @@
         margin-top: 5px;
     }
 
-    /* Nhóm nút - giữ nguyên gap 16px */
     .btn-group {
         display: flex;
         gap: 16px;
@@ -96,7 +94,7 @@
 
     .btn-submit, .btn-cancel {
         flex: 1;
-        padding: 12px 16px;   /* Đồng bộ padding với input */
+        padding: 12px 16px;   
         border: none;
         border-radius: 8px;
         font-size: 16px;
@@ -128,14 +126,14 @@
     {
         @Html.AntiForgeryToken()
 
-        <!-- Vị trí tuyển dụng - full width, chiếm 100% (giống 2 nút cạnh nhau) -->
+        <!-- Vị trí tuyển dụng - full width -->
         <div class="form-group">
             <label>Vị trí tuyển dụng</label>
             @Html.TextBoxFor(m => m.sViTriCV, new { @class = "form-control", id = "viTri", placeholder = "VD: Lập trình viên Front-End" })
             <div id="errViTri" class="error"></div>
         </div>
 
-        <!-- Hàng 2 cột: Địa điểm + Mức lương (mỗi cột rộng bằng 1 nút) -->
+        <!-- Hàng 2 cột: Địa điểm + Mức lương -->
         <div class="form-row">
             <div class="form-group">
                 <label>Địa điểm</label>
@@ -167,7 +165,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label>Mô tả công việc</label>
-                @Html.TextAreaFor(m => m.tMoTaCV, new { @class = "form-control", id = "moTa", rows = "5", placeholder = "Mô tả chi tiết về công việc..." })
+                @Html.TextAreaFor(m => m.sMoTaCV, new { @class = "form-control", id = "moTa", rows = "5", placeholder = "Mô tả chi tiết về công việc..." })
                 <div id="errMoTa" class="error"></div>
             </div>
             <div class="form-group">
