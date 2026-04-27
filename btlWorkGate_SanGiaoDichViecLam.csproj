@@ -90,7 +90,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <Content Include="Content\danhsachtin.css" />
     <Content Include="Content\js\dangtin.js" />
     <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
@@ -103,9 +102,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\mUngTuyen.cs" />
     <Compile Include="Models\TinTuyenDung.cs" />
     <Compile Include="Models\mTinTuyenDung.cs" />
     <Compile Include="Models\TinTuyenDungViewModel.cs" />
+    <Compile Include="Models\UngTuyen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -116,6 +117,8 @@
     <Content Include="Views\TinTuyenDung\vDangTin.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\TinTuyenDung\vDanhSachTin.cshtml" />
+    <Content Include="Views\TinTuyenDung\vChinhSuaTin.cshtml" />
+    <Content Include="Views\TinTuyenDung\vDanhSachUngVien.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

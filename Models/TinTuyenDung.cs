@@ -9,7 +9,10 @@ namespace btlWorkGate_SanGiaoDichViecLam.Models
         public string sViTriCV { get; set; } = string.Empty;
         public string sMoTaCV { get; set; } = string.Empty;
         public string? sYeuCauChuyenMon { get; set; }
-        public int iSoLuong { get; set; } = 1;
+        public int iSoLuong { get; set; } = 1;           // ← Số lượng tuyển (giữ nguyên)
+
+        // THÊM THUỘC TÍNH MỚI
+        public int iSoUngVien { get; set; } = 0;
         public double? fMucLuong { get; set; }
         public string sDiaDiem { get; set; } = string.Empty;
         public DateTime dHanNop { get; set; }

@@ -1,0 +1,487 @@
+﻿@model List<btlWorkGate_SanGiaoDichViecLam.Models.UngTuyen>
+
+@{
+    ViewBag.Title = "Danh sách ứng viên";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Tính thống kê (phải có dấu ngoặc nhọn)
+    int total = Model.Count;
+    int choDuyet = 0;
+    int phongVan = 0;
+    int daDuyet = 0;
+
+    foreach (var uv in Model)
+    {
+        string status = uv.TrangThaiHienThi;
+        if (status == "Chờ duyệt")
+        {
+            choDuyet++;
+        }
+        else if (status == "Mời phỏng vấn")
+        {
+            phongVan++;
+        }
+        else if (status == "Đã duyệt")
+        {
+            daDuyet++;
+        }
+    }
+}
+
+<style>
+    /* ---------- GIỮ NGUYÊN PHẦN CSS NHƯ BẠN ĐÃ CÓ ---------- */
+    body {
+        background-color: #f8fafc;
+        font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .stats-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+    }
+
+    .stat-card {
+        flex: 1 1 0;
+        min-width: 120px;
+        border: none;
+        border-radius: 20px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        text-align: center;
+        padding: 1rem 0.5rem;
+        transition: all 0.2s;
+    }
+
+        .stat-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card small {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #5b6e8c;
+            letter-spacing: 0.3px;
+        }
+
+    .ungvien-card {
+        margin-bottom: 1.25rem;
+    }
+
+        .ungvien-card .card {
+            border: none;
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+            .ungvien-card .card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 16px 28px rgba(0, 0, 0, 0.08);
+            }
+
+    .card-body {
+        padding: 1.5rem 1.75rem !important;
+    }
+
+    .candidate-info {
+        flex: 1;
+    }
+
+    .candidate-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: #475569;
+        margin-bottom: 8px;
+    }
+
+        .info-row i {
+            width: 20px;
+            font-size: 1rem;
+            color: #6c86a3;
+        }
+
+    .ngay-nop {
+        margin-top: 8px;
+        font-size: 0.8rem;
+        background: #f8fafc;
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 50px;
+        color: #2c3e66;
+    }
+
+    .candidate-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+        min-width: auto;
+    }
+
+    .status-badge {
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 6px 18px;
+        border-radius: 40px;
+        display: inline-block;
+    }
+
+    .badge-bg-warning {
+        background: #fffbeb;
+        color: #b45309;
+        border: 1px solid #fed7aa;
+    }
+
+    .badge-bg-info {
+        background: #eff6ff;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+
+    .badge-bg-success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-bg-danger {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .action-buttons-horizontal {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .btn-custom {
+        border-radius: 40px;
+        padding: 6px 18px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        cursor: pointer;
+    }
+
+    .btn-outline-interview {
+        color: #0b5e7e;
+        background: white;
+        border-color: #b9e2f0;
+    }
+
+        .btn-outline-interview:hover {
+            background-color: #e2f0f7;
+            border-color: #5aa9c2;
+            color: #0a4b64;
+        }
+
+    .btn-approve {
+        background-color: #2c7a4d;
+        border-color: #2c7a4d;
+        color: white;
+    }
+
+        .btn-approve:hover {
+            background-color: #1f603b;
+            border-color: #1f603b;
+        }
+
+    .btn-reject {
+        background-color: #dc2626;
+        border-color: #dc2626;
+        color: white;
+    }
+
+        .btn-reject:hover {
+            background-color: #b91c1c;
+            border-color: #b91c1c;
+        }
+
+    .btn-outline-cv {
+        color: #3b6cb7;
+        border-color: #cbdde9;
+        background: white;
+    }
+
+        .btn-outline-cv:hover {
+            background-color: #eef4ff;
+            border-color: #8bb3d4;
+            color: #1f4a8c;
+        }
+
+    .filter-label {
+        font-weight: 600;
+        margin-right: 12px;
+        color: #334155;
+    }
+
+    .form-select-sm-custom {
+        width: auto;
+        padding: 6px 28px 6px 14px;
+        border-radius: 40px;
+        border: 1px solid #cbd5e1;
+        background-color: white;
+        font-size: 0.85rem;
+    }
+
+    @@media (max-width: 640px) {
+        .stats-row {
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            min-width: 100px;
+            padding: 0.75rem 0.25rem;
+        }
+
+            .stat-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .stat-card small {
+                font-size: 0.7rem;
+            }
+
+        .card-body {
+            padding: 1.25rem !important;
+        }
+
+        .candidate-name {
+            font-size: 1.1rem;
+        }
+
+        .action-buttons-horizontal {
+            gap: 6px;
+        }
+
+        .btn-custom {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .candidate-actions {
+            align-items: flex-start;
+            margin-top: 16px;
+            width: 100%;
+        }
+
+        .action-buttons-horizontal {
+            justify-content: flex-start;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4 px-4 px-lg-5">
+    @Html.AntiForgeryToken()
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Danh sách ứng viên</h2>
+            <p class="text-muted mb-0">
+                Vị trí: <strong>@ViewBag.TenViTri</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- 4 thẻ thống kê nằm ngang -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <h3 class="text-primary">@total</h3>
+            <small>Tổng ứng viên</small>
+        </div>
+        <div class="stat-card">
+            <h3 style="color:#d97706;">@choDuyet</h3>
+            <small>Chờ duyệt</small>
+        </div>
+        <div class="stat-card">
+            <h3 style="color:#2563eb;">@phongVan</h3>
+            <small>Phỏng vấn</small>
+        </div>
+        <div class="stat-card">
+            <h3 style="color:#15803d;">@daDuyet</h3>
+            <small>Đã duyệt</small>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+        <span class="filter-label"><i class="bi bi-funnel-fill me-1"></i> Lọc theo:</span>
+        <select id="filterStatus" class="form-select-sm-custom">
+            <option value="">Tất cả</option>
+            <option value="Chờ duyệt">Chờ duyệt</option>
+            <option value="Mời phỏng vấn">Phỏng vấn</option>
+            <option value="Đã duyệt">Đã duyệt</option>
+            <option value="Từ chối">Từ chối</option>
+        </select>
+    </div>
+
+    <!-- Danh sách ứng viên -->
+    <div id="ungvienList" class="row g-3">
+        @foreach (var uv in Model)
+        {
+            // Lấy trạng thái hiển thị (đã ánh xạ từ DB status)
+            string displayStatus = uv.TrangThaiHienThi;
+            string badgeClass = "badge-bg-warning";
+            if (displayStatus == "Mời phỏng vấn")
+            { badgeClass = "badge-bg-info"; }
+            else if (displayStatus == "Đã duyệt")
+            { badgeClass = "badge-bg-success"; }
+            else if (displayStatus == "Từ chối")
+            { badgeClass = "badge-bg-danger"; }
+
+            <div class="col-12 ungvien-card" data-status="@displayStatus">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap">
+                            <!-- Thông tin bên trái -->
+                            <div class="candidate-info me-3">
+                                <div class="candidate-name">@uv.HoTen</div>
+                                <div class="info-row">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    <span>@uv.Email</span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="bi bi-telephone-fill"></i>
+                                    <span>@uv.SDT</span>
+                                </div>
+                                <div class="info-row">
+                                    <i class="bi bi-book-half"></i>
+                                    <span>Ngành: <strong>@uv.NganhHoc</strong></span>
+                                </div>
+                                <div class="ngay-nop">
+                                    <i class="bi bi-calendar3 me-1"></i> Ngày nộp: <strong>@uv.dNgayUngTuyen.ToString("dd/MM/yyyy")</strong>
+                                </div>
+                            </div>
+
+                            <!-- Bên phải: Badge + các nút xử lý (chỉ hiện khi chưa xử lý) -->
+                            <div class="candidate-actions">
+                                <span class="status-badge @badgeClass">@displayStatus</span>
+
+                                @if (displayStatus == "Chờ duyệt")
+                                {
+                                    <div class="action-buttons-horizontal">
+                                        <button onclick="xuLyUngVien('@uv.PK_sMaUngTuyen', 'Mời phỏng vấn')"
+                                                class="btn-custom btn-outline-interview">
+                                            <i class="bi bi-chat-dots me-1"></i> Mời PV
+                                        </button>
+                                        <button onclick="xuLyUngVien('@uv.PK_sMaUngTuyen', 'Đã duyệt')"
+                                                class="btn-custom btn-approve">
+                                            <i class="bi bi-check2-circle me-1"></i> Duyệt
+                                        </button>
+                                        <button onclick="xuLyUngVien('@uv.PK_sMaUngTuyen', 'Từ chối')"
+                                                class="btn-custom btn-reject">
+                                            <i class="bi bi-x-circle me-1"></i> Từ chối
+                                        </button>
+                                        <button onclick="xemCV('@uv.FK_sMaHoSo')"
+                                                class="btn-custom btn-outline-cv">
+                                            <i class="bi bi-file-text me-1"></i> Xem CV
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    // Nếu đã xử lý rồi, chỉ hiển thị nút xem CV
+                                <div class="action-buttons-horizontal">
+                                    <button onclick="xuLyUngVien('@uv.PK_sMaUngTuyen', 'Mời phỏng vấn')"
+                                            class="btn-custom btn-outline-interview">
+                                        <i class="bi bi-chat-dots me-1"></i> Mời PV
+                                    </button>
+                                    <button onclick="xemCV('@uv.FK_sMaHoSo')"
+                                            class="btn-custom btn-outline-cv">
+                                        <i class="bi bi-file-text me-1"></i> Xem CV
+                                    </button>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Lọc theo trạng thái
+        $("#filterStatus").on("change", function () {
+            let status = $(this).val();
+            if (!status) {
+                $(".ungvien-card").show();
+            } else {
+                $(".ungvien-card").each(function () {
+                    $(this).toggle($(this).data("status") === status);
+                });
+            }
+        });
+
+        // Xử lý duyệt / từ chối / mời phỏng vấn
+        function xuLyUngVien(maUngTuyen, trangThai) {
+            let msg = "";
+            if (trangThai === "Đã duyệt") msg = "duyệt";
+            else if (trangThai === "Từ chối") msg = "từ chối";
+            else if (trangThai === "Mời phỏng vấn") msg = "mời phỏng vấn";
+
+            if (!confirm(`Xác nhận ${msg} hồ sơ ứng viên này?`)) return;
+
+            let token = $('input[name="__RequestVerificationToken"]').val();
+            $.ajax({
+                url: '@Url.Action("XuLyXetDuyet", "TinTuyenDung")',
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,
+                    maUngTuyen: maUngTuyen,
+                    trangThai: trangThai
+                },
+                success: function (res) {
+                    if (res.success) {
+                        alert(res.message || "Cập nhật thành công!");
+                        location.reload();
+                    } else {
+                        alert(res.message || "Có lỗi xảy ra.");
+                    }
+                },
+                error: function () {
+                    alert("Lỗi kết nối, vui lòng thử lại.");
+                }
+            });
+        }
+
+        // Xem CV (tạm thời)
+        function xemCV(maHoSo) {
+            alert(`📄 Chức năng xem CV đang được phát triển.\nMã hồ sơ: ${maHoSo}`);
+        }
+    </script>
+}

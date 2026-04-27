@@ -1,0 +1,222 @@
+﻿@model btlWorkGate_SanGiaoDichViecLam.Models.TinTuyenDungViewModel
+
+@{
+    ViewBag.Title = "Chỉnh sửa tin tuyển dụng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body, html, *, input, textarea, button, label, h2 {
+        font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, "Roboto", "Inter", sans-serif !important;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        background: #f3f4f6;
+    }
+
+    .post-job-form {
+        max-width: 900px;
+        margin: 30px auto;
+        background: white;
+        padding: 30px 40px;
+        border-radius: 16px;
+        box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    }
+
+    .form-title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #1e40af;
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+        width: 100%;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 15px;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+        background: white;
+    }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            outline: none;
+        }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+    }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 16px;
+        margin-top: 40px;
+    }
+
+    .btn-submit, .btn-cancel {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-submit {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .btn-submit:disabled {
+        background: #93c5fd;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="post-job-form">
+    <h2 class="form-title">Chỉnh sửa tin tuyển dụng</h2>
+
+    @using (Html.BeginForm("yeuCauSuaTin", "TinTuyenDung", FormMethod.Post, new { id = "formSuaTin" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="maTin" value="@ViewBag.MaTin" />
+
+        <div class="form-group">
+            <label>Vị trí tuyển dụng</label>
+            @Html.TextBoxFor(m => m.sViTriCV, new { @class = "form-control", id = "viTri" })
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Địa điểm</label>
+                @Html.TextBoxFor(m => m.sDiaDiem, new { @class = "form-control", id = "diaDiem" })
+            </div>
+            <div class="form-group">
+                <label>Mức lương (triệu)</label>
+                @Html.TextBoxFor(m => m.fMucLuong, new { @class = "form-control", id = "luong", type = "number", step = "0.1" })
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Số lượng tuyển</label>
+                @Html.TextBoxFor(m => m.iSoLuong, new
+                {
+                    @class = "form-control",
+                    id = "soLuong",
+                    type = "number",
+                    min = "1",
+                    Value = Model.iSoLuong   // Buộc bind giá trị
+                })
+            </div>
+            <div class="form-group">
+                <label>Hạn nộp hồ sơ</label>
+                @Html.TextBoxFor(m => m.dHanNop, new
+                {
+                    @class = "form-control",
+                    id = "hanNop",
+                    type = "date",
+                    Value = Model.dHanNop.ToString("yyyy-MM-dd")   // Quan trọng: format cho input date
+                })
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mô tả công việc</label>
+                @Html.TextAreaFor(m => m.sMoTaCV, new { @class = "form-control", id = "moTa", rows = "5" })
+            </div>
+            <div class="form-group">
+                <label>Yêu cầu ứng viên</label>
+                @Html.TextAreaFor(m => m.sYeuCauChuyenMon, new { @class = "form-control", id = "yeuCau", rows = "5" })
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="button" onclick="history.back()" class="btn-cancel">Hủy</button>
+            <button type="button" id="btnLuuSua" class="btn-submit" disabled>Lưu thay đổi</button>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const btnLuu = $("#btnLuuSua");
+            let hasChanged = false;   // Biến theo dõi xem người dùng đã chỉnh sửa chưa
+
+            // Ban đầu nút bị disabled
+            btnLuu.prop("disabled", true);
+
+            // Theo dõi khi người dùng thay đổi bất kỳ trường nào
+            $("input, textarea").on("input change", function () {
+                hasChanged = true;
+                btnLuu.prop("disabled", false);   // Bật nút khi có thay đổi
+            });
+
+            // Xử lý nút Lưu thay đổi
+            btnLuu.click(function () {
+                if (!hasChanged) {
+                    alert("Bạn chưa thay đổi thông tin nào!");
+                    return;
+                }
+
+                if (!confirm("Bạn có chắc chắn muốn lưu thay đổi?\nTin sẽ được đưa về trạng thái 'Chờ duyệt'.")) {
+                    return;
+                }
+
+                $.ajax({
+                    url: $("#formSuaTin").attr("action"),
+                    type: "POST",
+                    data: $("#formSuaTin").serialize(),
+                    success: function (res) {
+                        if (res.success) {
+                            alert(res.message || "Cập nhật tin tuyển dụng thành công!");
+                            window.location.href = '@Url.Action("vDanhSachTin", "TinTuyenDung")';
+                        } else {
+                            alert(res.message || "Cập nhật thất bại!");
+                        }
+                    },
+                    error: function () {
+                        alert("Lỗi kết nối. Vui lòng thử lại.");
+                    }
+                });
+            });
+        });
+    </script>
+}
